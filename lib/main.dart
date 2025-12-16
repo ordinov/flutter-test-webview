@@ -38,19 +38,30 @@ class WebViewPage extends StatefulWidget {
 class _WebViewPageState extends State<WebViewPage> {
   late final WebViewController _controller;
   bool _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.white)
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (String url) {
-            setState(() => _isLoading = true);
+            setState(() {
+              _isLoading = true;
+              _error = null;
+            });
           },
           onPageFinished: (String url) {
             setState(() => _isLoading = false);
+          },
+          onWebResourceError: (WebResourceError error) {
+            setState(() {
+              _error = 'Errore: ${error.description}';
+              _isLoading = false;
+            });
           },
         ),
       )
@@ -66,6 +77,17 @@ class _WebViewPageState extends State<WebViewPage> {
             WebViewWidget(controller: _controller),
             if (_isLoading)
               const Center(child: CircularProgressIndicator()),
+            if (_error != null)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    _error!,
+                    style: const TextStyle(color: Colors.red, fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
