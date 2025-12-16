@@ -66,6 +66,10 @@ rm flutter_macos_*.zip
 # Avvia emulatore Android (se installato)
 .\flutter\bin\flutter emulators --launch <nome_emulatore>
 
+# Pulisci la cache se necessario
+Remove-Item -Recurse -Force "$env:USERPROFILE\.gradle\caches" -ErrorAction SilentlyContinue
+.\flutter\bin\flutter clean
+
 # Esegui app
 .\flutter\bin\flutter run
 ```
@@ -79,12 +83,13 @@ rm flutter_macos_*.zip
 # Avvia simulatore iOS
 open -a Simulator
 
+# Pulisci la cache se necessario
+rm -rf ~/.gradle/caches ~/Library/Caches/CocoaPods ~/Library/Developer/Xcode/DerivedData
+pod cache clean --all
+./flutter/bin/flutter clean
+
 # Esegui app
 ./flutter/bin/flutter run
-
-# Oppure specifica la piattaforma
-./flutter/bin/flutter run -d macos    # App desktop macOS
-./flutter/bin/flutter run -d chrome   # Web browser
 ```
 
 ---
